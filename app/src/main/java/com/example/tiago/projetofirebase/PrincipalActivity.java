@@ -15,13 +15,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PrincipalActivity extends AppCompatActivity {
 
     private FirebaseAuth mFirebaseAuth;
     FirebaseDatabase mFirebaseDatabase;
-    DatabaseReference mDatabase;
+    DatabaseReference mDatabase, mDatabaseRoot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +32,16 @@ public class PrincipalActivity extends AppCompatActivity {
 
         this.mFirebaseAuth = FirebaseAuth.getInstance();
         this.mFirebaseDatabase = FirebaseDatabase.getInstance();
+
         this.mDatabase = this.mFirebaseDatabase.getReference("clientes");
+        this.mDatabaseRoot = this.mFirebaseDatabase.getReference("");
 
-        //this.mDatabase.child("2").child("nome").setValue("Montgomery");
+        this.salvarCliente(1,"Alfredo", 31, "M");
+        this.salvarCliente(2,"Bianca", 48, "F");
+        this.salvarCliente(3,"Fred", 29, "M");
+        this.removerCliente(1);
 
-        this.salvarCliente(1,"Tiago", 33, "M");
+        this.atualizarCliente(2, "Daniela", 26, "F");
 
         this.mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
@@ -73,5 +80,24 @@ public class PrincipalActivity extends AppCompatActivity {
         Cliente cliente = new Cliente(nome, idade, sexo);
 
         this.mDatabase.child( Integer.toString(clienteId) ).setValue(cliente);
+    }
+
+    private void atualizarCliente(int clienteId, String nome, int idade, String sexo){
+
+        Cliente cliente = new Cliente(nome, idade, sexo);
+
+        Map<String, Object> clienteDados = cliente.toMap();
+
+        Map<String, Object> atualizacoes = new HashMap<>();
+        atualizacoes.put("clientes/"+Integer.toString(clienteId), clienteDados);
+        atualizacoes.put("versao", "2.0.1");
+
+        this.mDatabaseRoot.updateChildren(atualizacoes);
+    }
+
+    private void removerCliente(int clienteId){
+
+        //this.mDatabase.child(Integer.toString(clienteId)).child("idade").removeValue();
+        this.mDatabase.child(Integer.toString(clienteId)).removeValue();
     }
 }

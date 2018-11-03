@@ -1,10 +1,13 @@
 package com.example.tiago.projetofirebase;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Cliente {
 
-    public String nome;
-    public int idade;
-    public String sexo;
+    private String nome;
+    private int idade;
+    private String sexo;
 
     public Cliente(String nome, int idade, String sexo) {
         this.nome = nome;
@@ -34,5 +37,16 @@ public class Cliente {
 
     public void setSexo(String sexo) {
         this.sexo = sexo;
+    }
+
+    public Map<String, Object> toMap(){
+
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("nome", this.getNome());
+        result.put("idade", this.getIdade());
+        result.put("sexo", this.getSexo());
+
+        return result;
     }
 }
