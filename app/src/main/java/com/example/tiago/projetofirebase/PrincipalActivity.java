@@ -1,6 +1,7 @@
 package com.example.tiago.projetofirebase;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,11 +41,16 @@ public class PrincipalActivity extends AppCompatActivity {
         this.salvarCliente(1,"Alfredo", 31, "M");
         this.salvarCliente(2,"Bianca", 48, "F");
         this.salvarCliente(3,"Fred", 29, "M");
-        this.removerCliente(1);
 
-        this.atualizarCliente(2, "Daniela", 26, "F");
+        //this.atualizarCliente(2, "Daniela", 26, "F");
 
-        this.mDatabase.addValueEventListener(new ValueEventListener() {
+        //this.removerCliente(1);
+
+        //
+
+        this.mDatabase.addChildEventListener(childEventListener);
+
+        /*this.mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -56,7 +63,7 @@ public class PrincipalActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        });*/
     }
 
     @Override
@@ -100,4 +107,46 @@ public class PrincipalActivity extends AppCompatActivity {
         //this.mDatabase.child(Integer.toString(clienteId)).child("idade").removeValue();
         this.mDatabase.child(Integer.toString(clienteId)).removeValue();
     }
+
+    ChildEventListener childEventListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            Cliente cliente = dataSnapshot.getValue(Cliente.class);
+
+            Toast.makeText(PrincipalActivity.this, cliente.getNome(), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            Cliente cliente = dataSnapshot.getValue(Cliente.class);
+
+            Toast.makeText(PrincipalActivity.this, cliente.getNome(), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            Cliente cliente = dataSnapshot.getValue(Cliente.class);
+
+            Toast.makeText(PrincipalActivity.this, cliente.getNome(), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            Cliente cliente = dataSnapshot.getValue(Cliente.class);
+
+            Toast.makeText(PrincipalActivity.this, cliente.getNome(), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            //Cliente cliente = dataSnapshot.getValue(Cliente.class);
+
+            Toast.makeText(PrincipalActivity.this, "CANCELADO", Toast.LENGTH_LONG).show();
+        }
+    };
 }

@@ -9,6 +9,8 @@ public class Cliente {
     private int idade;
     private String sexo;
 
+    public Cliente(){ }
+
     public Cliente(String nome, int idade, String sexo) {
         this.nome = nome;
         this.idade = idade;
